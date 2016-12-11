@@ -15,7 +15,6 @@
 		A90540791DF2FBF300EE5C70 /* DynamicChangeValueInCellController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90540691DF2FBF300EE5C70 /* DynamicChangeValueInCellController.m */; };
 		A905407A1DF2FBF300EE5C70 /* DynamicHeightCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A905406B1DF2FBF300EE5C70 /* DynamicHeightCell.m */; };
 		A905407B1DF2FBF300EE5C70 /* DynamicHeightCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A905406C1DF2FBF300EE5C70 /* DynamicHeightCell.xib */; };
-		A905407C1DF2FBF300EE5C70 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A905406D1DF2FBF300EE5C70 /* Info.plist */; };
 		A905407D1DF2FBF300EE5C70 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A905406E1DF2FBF300EE5C70 /* main.m */; };
 		A905407E1DF2FBF300EE5C70 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A90540701DF2FBF300EE5C70 /* RootViewController.m */; };
 		A905407F1DF2FBF300EE5C70 /* XQChainUpdates.m in Sources */ = {isa = PBXBuildFile; fileRef = A90540731DF2FBF300EE5C70 /* XQChainUpdates.m */; };
@@ -165,7 +164,6 @@
 				A905407B1DF2FBF300EE5C70 /* DynamicHeightCell.xib in Resources */,
 				A90540771DF2FBF300EE5C70 /* Main.storyboard in Resources */,
 				A90540751DF2FBF300EE5C70 /* Assets.xcassets in Resources */,
-				A905407C1DF2FBF300EE5C70 /* Info.plist in Resources */,
 				A90540761DF2FBF300EE5C70 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

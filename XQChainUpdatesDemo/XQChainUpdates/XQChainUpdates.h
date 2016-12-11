@@ -70,3 +70,12 @@ typedef void(^XQChainActionBlock)(NSObject *obj);
 - (void)removeChainByPath87:(NSString *)keyPath;
 
 @end
+
+@interface NSObject (XQObserver)
+
+- (void)addObserver87:(NSObject *)observer forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options;
+
+- (void)removeObserverForKeyPath87:(NSString *)keyPath;
+
+@end
+
