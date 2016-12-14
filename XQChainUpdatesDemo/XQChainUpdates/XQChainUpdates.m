@@ -65,44 +65,41 @@
              action:(XQChainActionBlock)actionBlock {
     
     if (object && keyPath && view && actionBlock) {
-        @synchronized (self) {
-            NSString *identifier = (NSString *)object.chainIdentifer87;
-            if (!identifier) {
-                identifier = [NSString stringWithFormat:@"%.0f%.0u", [NSDate timeIntervalSinceReferenceDate], arc4random()];
-                object.chainIdentifer87 = identifier;
+        NSString *identifier = (NSString *)object.chainIdentifer87;
+        if (!identifier) {
+            identifier = [NSString stringWithFormat:@"%.0f%.0u", [NSDate timeIntervalSinceReferenceDate], arc4random()];
+            object.chainIdentifer87 = identifier;
+        }
+        
+        // save obj paths in the same dictionary
+        NSMutableDictionary *objDict = [self.allElements objectForKey:identifier];
+        if (!objDict) {
+            objDict = [NSMutableDictionary dictionary];
+            [self.allElements setObject:objDict forKey:identifier];
+        }
+        
+        ChainElement87 *element = [objDict objectForKey:keyPath];
+        NSString *existChainID = element.eleView.chainIdentifer87;
+        view.chainIdentifer87 = identifier;
+        
+        if (element) {
+            // set obj value to other view ,the preview view need do some clear work
+            if (element.eleView != view ||
+                ![existChainID isEqualToString:identifier]) {
+                [element.eleObject removeObserverForKeyPath87:element.eleKeyPath];
             }
-            
-            // save obj paths in the same dictionary
-            NSMutableDictionary *objDict = [self.allElements objectForKey:identifier];
-            if (!objDict) {
-                objDict = [NSMutableDictionary dictionary];
-                [self.allElements setObject:objDict forKey:identifier];
-            }
-            
-            ChainElement87 *element = [objDict objectForKey:keyPath];
-            if (element) {
-                NSString *existChainID = element.eleView.chainIdentifer87;
-                // set obj value to other view ,the preview view need do some clear work
-                if (element.eleView != view ||
-                    ![existChainID isEqualToString:identifier]) {
-                    [element.eleObject removeObserverForKeyPath87:element.eleKeyPath];
-                }
-                element.eleKeyPath = keyPath;
-                element.eleAction = actionBlock;
-                element.eleView = view;
-            } else {
-                element = [[ChainElement87 alloc] initWithObj:object keyPath:keyPath view:view action:actionBlock];
-            }
-            
-            element.chainIdentifer87 = identifier;
-            view.chainIdentifer87 = identifier;
-            
-            [object addObserver87:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew];
-            [objDict setObject:element forKey:keyPath];
-            
-            if (!manualUpdate) {
-                [element update];
-            }
+            element.eleKeyPath = keyPath;
+            element.eleAction = actionBlock;
+            element.eleView = view;
+        } else {
+            element = [[ChainElement87 alloc] initWithObj:object keyPath:keyPath view:view action:actionBlock];
+        }
+        
+        [object addObserver87:self forKeyPath:keyPath options:NSKeyValueObservingOptionNew];
+        [objDict setObject:element forKey:keyPath];
+        
+        if (!manualUpdate) {
+            [element update];
         }
     }
 }
@@ -110,7 +107,7 @@
 
 /**
  romove chain update of object by keyPath
-
+ 
  @param object  observed object
  @param keyPath keyPath to remove, if nil, all path will be removed
  */
@@ -121,21 +118,19 @@
     }
     
     @try {
-        @synchronized (self) {
-            NSMutableDictionary *elements = [self.allElements objectForKey:identfier];
-            if (elements) {
-                if (!keyPath) {
-                    for (ChainElement87 *ele in elements.allValues) {
-                        [ele.eleObject removeObserverForKeyPath87:ele.eleKeyPath];
-                    }
-                    [self.allElements removeObjectForKey:identfier];
-                } else {
-                    ChainElement87 *ele = [elements objectForKey:keyPath];
+        NSMutableDictionary *elements = [self.allElements objectForKey:identfier];
+        if (elements) {
+            if (!keyPath) {
+                for (ChainElement87 *ele in elements.allValues) {
                     [ele.eleObject removeObserverForKeyPath87:ele.eleKeyPath];
-                    [elements removeObjectForKey:keyPath];
                 }
-                
+                [self.allElements removeObjectForKey:identfier];
+            } else {
+                ChainElement87 *ele = [elements objectForKey:keyPath];
+                [ele.eleObject removeObserverForKeyPath87:ele.eleKeyPath];
+                [elements removeObjectForKey:keyPath];
             }
+            
         }
     } @catch (NSException *exception) {
         NSLog(@"remove error");
@@ -210,7 +205,7 @@ static char chainIdentifer87Char;
 
 - (void)update {
     if (!self.eleView ||
-        ![self.eleView.chainIdentifer87 isEqualToString:self.chainIdentifer87]) {
+        ![self.eleView.chainIdentifer87 isEqualToString:self.eleObject.chainIdentifer87]) {
         [self.eleObject removeChainByPath87:nil];
         return;
     }
@@ -220,19 +215,24 @@ static char chainIdentifer87Char;
         if (self.eleView && self.eleObject && self.eleAction &&
             [self.eleView.chainIdentifer87 isEqualToString:self.eleObject.chainIdentifer87]) {
             self.eleAction(self.eleObject);
-            
-            [self checkForDealloc];
         }
+        
+        [self performSelector:@selector(checkForDealloc) withObject:nil afterDelay:15.0];
     });
 }
 
 - (void)checkForDealloc {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(checkForDealloc) object:nil];
-    if (!self.eleView) {
+    
+    NSString *eleChain = self.eleView.chainIdentifer87;
+    NSString *selfChain = self.eleObject.chainIdentifer87;
+    NSLog(@"eleChain: %@, self:%@", eleChain, selfChain);
+    
+    if (!self.eleView || ![self.eleView.chainIdentifer87 isEqualToString:self.eleObject.chainIdentifer87]) {
         NSLog(@"keychain removed:%@ %@", self.chainIdentifer87, self.eleKeyPath);
         [self.eleObject removeChainByPath87:nil];
     } else {
-        [self performSelector:@selector(checkForDealloc) withObject:nil afterDelay:5.0];
+        [self performSelector:@selector(checkForDealloc) withObject:nil afterDelay:15.0];
     }
 }
 
